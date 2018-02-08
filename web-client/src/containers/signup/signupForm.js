@@ -46,6 +46,17 @@ class SignupForm extends Component {
         this.props.next();
     };
 
+    onCancel = () => {
+        this.setState({
+            username: '',
+            email: '',
+            password: '',
+            confirmPassword: '',
+        });
+
+        this.props.cancel();
+    };
+
     render() {
         const { classes } = this.props;
         
@@ -86,7 +97,8 @@ class SignupForm extends Component {
                         fullWidth
                         onChange={this.handleChange('confirmPassword')}
                     />
-                    <Button variant="raised" className={classes.button} onClick={() => this.onSignup()}>Signup!</Button>
+                    <Button variant="raised" className={classes.button} onClick={this.onCancel}>Cancel</Button>
+                    <Button variant="raised" className={classes.button} onClick={this.onSignup}>Signup!</Button>
                 </form>
             </div>
         )

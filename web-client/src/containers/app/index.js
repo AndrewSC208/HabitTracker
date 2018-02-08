@@ -10,10 +10,6 @@ import Dashboard from '../dashboard';
 
 const App = () => (
     <div>
-        <header>
-            <Link to="/">Home | </Link>
-        </header>
-
         <main>
             <Route exact path="/" component={Home} />
             <Route exact path="/signup" component={Signup} />

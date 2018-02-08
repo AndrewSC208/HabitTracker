@@ -1,3 +1,4 @@
+import { push } from 'react-router-redux';
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 
@@ -8,7 +9,7 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => bindActionCreators({
-    
+    toHome: () => push('/'),
 }, dispatch)
 
 export default connect(

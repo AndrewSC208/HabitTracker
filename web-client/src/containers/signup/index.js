@@ -10,6 +10,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => bindActionCreators({
     toDashboard: () => push('/dashboard'),
+    toHome: () => push('/')
 }, dispatch)
 
 export default connect(

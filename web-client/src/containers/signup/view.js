@@ -20,14 +20,15 @@ const styles = theme => ({
 class SignUpView extends Component {
 
     render() {
-        const { classes, toDashboard } = this.props;
+        const { classes, toDashboard, toHome } = this.props;
+        
         return (
             <div className={classes.root}>
                 <Grid container spacing={24}>
                     <Grid item xs={12}>
                         <Paper className={classes.paper}>
                             <h1>Sign Up</h1>
-                            <SignupForm next={toDashboard}/>
+                            <SignupForm next={toDashboard} cancel={toHome}/>
                         </Paper>
                     </Grid>
                 </Grid>

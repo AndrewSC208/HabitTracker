@@ -14,13 +14,13 @@ const styles = theme => ({
 class LoginView extends Component {
 
     render() {
-        const { classes, toDashboard } = this.props;
+        const { classes, toDashboard, toHome } = this.props;
         
         return (
             <div className={classes.root}>
                 <Grid container spacing={24}>
                     <Grid item xs={12}>
-                        <LoginForm next={toDashboard}/>
+                        <LoginForm next={toDashboard} cancel={toHome}/>
                     </Grid>
                 </Grid>
             </div>
