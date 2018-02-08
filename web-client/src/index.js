@@ -5,7 +5,10 @@ import { ConnectedRouter } from 'react-router-redux'
 import store, { history } from './store'
 import App from './containers/app'
 import registerServiceWorker from './registerServiceWorker';
+import { MuiThemeProvider } from 'material-ui/styles';
+import theme from './modules/theme';
 
+import 'typeface-roboto';
 import './index.css'
 
 const target = document.querySelector('#root')
@@ -13,9 +16,9 @@ const target = document.querySelector('#root')
 render(
     <Provider store={store}>
         <ConnectedRouter history={history}>
-            <div>
+            <MuiThemeProvider theme={theme}>
                 <App />
-            </div>
+            </MuiThemeProvider>
         </ConnectedRouter>
     </Provider>,
     target

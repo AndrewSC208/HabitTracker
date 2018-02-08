@@ -3,19 +3,22 @@ import { Route, Link } from 'react-router-dom'
 /*
  *  IMPORTED CONTAINERS
  */
-import Home from '../home'
-import About from '../about'
+import Home from '../home';
+import Signup from '../signup';
+import Login from '../login';
+import Dashboard from '../dashboard';
 
 const App = () => (
     <div>
         <header>
-            <Link to="/">Home</Link>
-            <Link to="/about-us">About</Link>
+            <Link to="/">Home | </Link>
         </header>
 
         <main>
             <Route exact path="/" component={Home} />
-            <Route exact path="/about-us" component={About} />
+            <Route exact path="/signup" component={Signup} />
+            <Route exact path="/login" component={Login} />
+            <Route exact path="/dashboard" component={Dashboard} />
         </main>
     </div>
 );
