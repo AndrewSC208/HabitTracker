@@ -1,0 +1,27 @@
+version: '3'
+
+services:
+  mongo:
+    build:
+      context: ./data
+      dockerfile: dockerfile.mongo.dev
+    ports:
+      - 27017:27017
+
+  server:
+    build:
+      context: ./server
+      dockerfile: dockerfile.node.dev
+    environment:
+      - NODE_ENV=development
+    env_file:
+      - ./Docker/server/server.env
+    volumes:
+      - ./server:/usr/src/app
+    ports:
+      - 4112:4112
+    depends_on:
+      - mongo
+    links:
+      - mongo
+
