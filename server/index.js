@@ -6,6 +6,7 @@ import helmet from 'helmet';
 import cookieParser from 'cookie-parser';
 import responseTime from 'response-time';
 import bodyParser from 'body-parser';
+import cors from 'express-cors';
 /*
  *  CONFIG OBJECT
  */
@@ -29,6 +30,11 @@ app.use(cookieParser());
 app.use(responseTime());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+app.use(cors({
+    allowedOrigins: [
+        'http://localhost:3000'
+    ]
+}))
 /*
  * API ROUTES
  */
