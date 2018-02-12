@@ -1,22 +1,17 @@
-import React from 'react';
-import { Route, Link } from 'react-router-dom'
-/*
- *  IMPORTED CONTAINERS
- */
-import Home from '../home';
-import Signup from '../signup';
-import Login from '../login';
-import Dashboard from '../dashboard';
+import { bindActionCreators } from 'redux'
+import { connect } from 'react-redux'
 
-const App = () => (
-    <div>
-        <main>
-            <Route exact path="/" component={Home} />
-            <Route exact path="/signup" component={Signup} />
-            <Route exact path="/login" component={Login} />
-            <Route exact path="/dashboard" component={Dashboard} />
-        </main>
-    </div>
-);
+import AppView from './view';
 
-export default App;
+const mapStateToProps = state => ({
+    snackBar: state.notification
+});
+
+const mapDispatchToProps = dispatch => bindActionCreators({
+
+}, dispatch)
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(AppView)
