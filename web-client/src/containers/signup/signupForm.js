@@ -38,14 +38,6 @@ class SignupForm extends Component {
         });
     };
 
-    onSignup = (form) => {
-        const { username, email, password } = this.state;
-
-        console.log(username, email, password);
-
-        this.props.next();
-    };
-
     onCancel = () => {
         this.setState({
             username: '',
@@ -55,6 +47,36 @@ class SignupForm extends Component {
         });
 
         this.props.cancel();
+    };
+
+    signupPost = () => {
+        const { username, password, email } = this.state;
+        const url = `http://localhost:4112/api/users`;
+        const msg = {
+            username,
+            email,
+            password
+        }
+        
+        return fetch(url, {
+            method: 'POST',
+            body: JSON.stringify(msg),
+            headers: new Headers({
+                'Content-Type': 'application/json'
+            })
+        })
+        .then(res => res.json())
+        .catch(error => console.error('Error:', error))
+    };
+
+    onSignup = () => {
+        const res = this.signupPost().then(res => {
+            if (res) {
+                // this is my stoping point for right now
+                console.log(res);
+                this.props.next(res.username);
+            }
+        });
     };
 
     render() {

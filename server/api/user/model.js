@@ -21,6 +21,11 @@ const UserSchema = new mongoose.Schema({
         required: true,
         minLength: 6
     },
+    username: {
+        type: String,
+        required: true,
+        trim: true
+    },
     tokens: [{
         access: {
             type: String,
@@ -37,7 +42,7 @@ UserSchema.methods.toJSON = function() {
     const user = this;
     let userObj = user.toObject();
 
-    return _.pick(userObj, ['_id', 'email']);
+    return _.pick(userObj, ['_id', 'email', 'username']);
 };
 
 UserSchema.methods.generateAuthTokens = function() {
@@ -60,8 +65,9 @@ UserSchema.methods.removeToken = function(token) {
         }
     })
 };
-
-// model methods get called as model with the this binding.
+/*
+ * model methods get called as model with the this binding.
+ */ 
 UserSchema.statics.findByToken = function(token) {
     const User = this;
     let decoded;
