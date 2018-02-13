@@ -19,7 +19,14 @@ const styles = theme => ({
         margin: theme.spacing.unit,
     },
 });
-
+/**********
+ *  ACTIONS THIS COMPONENT NEEDS TO TAKE
+ *      1. validate user input
+ *      2. send out fetch.post => /users
+ *      3. respond to fetch
+ *             400 -> display erro to user
+ *             200 -> route to greet as an authenticated user
+ **********/  
 class SignupForm extends Component {
     constructor(props) {
         super(props);
@@ -29,14 +36,47 @@ class SignupForm extends Component {
             email: '',
             password: '',
             confirmPassword: '',
+            // Use standar error system
+            error: {
+                code: 0,
+                text: '',
+                lable: '',
+                action: null
+            }
         }
     }
+
+    postForm = () => {
+
+    };
 
     handleChange = name => event => {
         this.setState({
             [name]: event.target.value,
         });
     };
+
+    validatePassword = (pwd1, pwd2) => {
+        if (pwd1 !== pwd2) {
+            this.setState({
+                error: {
+                    code: false,
+                    text: 'Passwords are not identicle',
+                    label: 'Confirm Passwords'
+                }
+            });
+            return false;
+        } else {
+            this.setState({
+                error: {
+                    code: true,
+                    text: '',
+                    label: ''
+                }
+            });
+            return true;
+        }
+    }
 
     onCancel = () => {
         this.setState({
@@ -45,7 +85,6 @@ class SignupForm extends Component {
             password: '',
             confirmPassword: '',
         });
-
         this.props.cancel();
     };
 
@@ -70,7 +109,7 @@ class SignupForm extends Component {
     };
 
     onSignup = () => {
-        const res = this.signupPost().then(res => {
+        this.signupPost().then(res => {
             if (res) {
                 // this is my stoping point for right now
                 console.log(res);
@@ -81,6 +120,7 @@ class SignupForm extends Component {
 
     render() {
         const { classes } = this.props;
+        const { error } = this.state;
         
         return (
             <div className={classes.root}>
@@ -106,12 +146,16 @@ class SignupForm extends Component {
                     <TextField
                         id="password"
                         label="Password"
+                        type="password"
                         className={classes.textField}
                         margin="normal"
                         fullWidth
                         onChange={this.handleChange('password')}
                     />
                     <TextField
+                        error={!error.valid}
+                        helperText={error.text}
+                        type="password"
                         id="confirmPassword"
                         label="Confirm Password"
                         className={classes.textField}
