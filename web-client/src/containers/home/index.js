@@ -10,7 +10,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => bindActionCreators({
     toSignup: () => push('/signup'),
-    toLogin: () => push('/login'),
+    toLogin:  () => push('/login'),
 }, dispatch)
 
 export default connect(

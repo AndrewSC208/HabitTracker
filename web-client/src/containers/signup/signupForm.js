@@ -19,14 +19,7 @@ const styles = theme => ({
         margin: theme.spacing.unit,
     },
 });
-/**********
- *  ACTIONS THIS COMPONENT NEEDS TO TAKE
- *      1. validate user input
- *      2. send out fetch.post => /users
- *      3. respond to fetch
- *             400 -> display erro to user
- *             200 -> route to greet as an authenticated user
- **********/  
+  
 class SignupForm extends Component {
     constructor(props) {
         super(props);
@@ -36,7 +29,6 @@ class SignupForm extends Component {
             email: '',
             password: '',
             confirmPassword: '',
-            // Use standar error system
             error: {
                 code: 0,
                 text: '',
@@ -46,36 +38,14 @@ class SignupForm extends Component {
         }
     }
 
-    postForm = () => {
-
-    };
-
     handleChange = name => event => {
         this.setState({
             [name]: event.target.value,
         });
     };
 
-    validatePassword = (pwd1, pwd2) => {
-        if (pwd1 !== pwd2) {
-            this.setState({
-                error: {
-                    code: false,
-                    text: 'Passwords are not identicle',
-                    label: 'Confirm Passwords'
-                }
-            });
-            return false;
-        } else {
-            this.setState({
-                error: {
-                    code: true,
-                    text: '',
-                    label: ''
-                }
-            });
-            return true;
-        }
+    validateInput = () => {
+
     }
 
     onCancel = () => {
@@ -88,34 +58,12 @@ class SignupForm extends Component {
         this.props.cancel();
     };
 
-    signupPost = () => {
-        const { username, password, email } = this.state;
-        const url = `http://localhost:4112/api/users`;
-        const msg = {
-            username,
-            email,
-            password
-        }
-        
-        return fetch(url, {
-            method: 'POST',
-            body: JSON.stringify(msg),
-            headers: new Headers({
-                'Content-Type': 'application/json'
-            })
-        })
-        .then(res => res.json())
-        .catch(error => console.error('Error:', error))
-    };
-
     onSignup = () => {
-        this.signupPost().then(res => {
-            if (res) {
-                // this is my stoping point for right now
-                console.log(res);
-                this.props.next(res.username);
-            }
-        });
+        const { username, password, email } = this.state;
+        const { signup } = this.props;
+        // todo: I need to validate user input:
+        signup({username, password, email});
+        // todo: on successful signup I need to route to dashboard
     };
 
     render() {
@@ -153,7 +101,7 @@ class SignupForm extends Component {
                         onChange={this.handleChange('password')}
                     />
                     <TextField
-                        error={!error.valid}
+                        error={error.code !== 0}
                         helperText={error.text}
                         type="password"
                         id="confirmPassword"
