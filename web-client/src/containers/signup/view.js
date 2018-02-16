@@ -26,10 +26,8 @@ class SignUpView extends Component {
             <div className={classes.root}>
                 <Grid container spacing={24}>
                     <Grid item xs={12}>
-                        <Paper className={classes.paper}>
-                            <h1>Sign Up</h1>
-                            <SignupForm next={toDashboard} cancel={toHome} signup={createUserReq}/>
-                        </Paper>
+                        <h1>Sign Up</h1>
+                        <SignupForm next={toDashboard} cancel={toHome} signup={createUserReq}/>
                     </Grid>
                 </Grid>
             </div>

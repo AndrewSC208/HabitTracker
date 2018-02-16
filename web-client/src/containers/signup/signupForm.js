@@ -3,6 +3,10 @@ import { withStyles } from 'material-ui/styles';
 import TextField from 'material-ui/TextField';
 import Button from 'material-ui/Button';
 
+import { checkPassword, checkEmail } from '../../modules/utils/validateInput';
+
+
+
 const styles = theme => ({
     root: {
 
@@ -30,7 +34,7 @@ class SignupForm extends Component {
             password: '',
             confirmPassword: '',
             error: {
-                code: 0,
+                code: 5,
                 text: '',
                 lable: '',
                 action: null
@@ -39,12 +43,48 @@ class SignupForm extends Component {
     }
 
     handleChange = name => event => {
+        const { username, email, password, confirmPassword } = this.state;
+
+        let error = {
+            code: 0,
+            text: '',
+            label: '',
+            action: null
+        }
+        // TODO: Fix this validation, enable button when input is full and valid:
+        if (username.length < 1 && email.length < 1 && password.length < 1 && confirmPassword.length < 1) {
+            error = {
+                code: 5,
+                text: 'Some input fields are empty',
+                label: '',
+                action: null
+            }
+        }
+
         this.setState({
+            error,
             [name]: event.target.value,
         });
     };
 
     validateInput = () => {
+        const { username, email, password, confirmPassword } = this.state;
+
+        const passwordError = checkPassword(password, confirmPassword);
+
+        if (passwordError.code !== 0) {
+            this.setState({
+                error: passwordError
+            });
+        }
+
+        const emailError = checkEmail(email);
+
+        if (emailError.code !== 0 ) {
+            this.setState({
+                error: emailError
+            });
+        };
 
     }
 
@@ -59,10 +99,14 @@ class SignupForm extends Component {
     };
 
     onSignup = () => {
-        const { username, password, email } = this.state;
+        const { username, password, email, error } = this.state;
         const { signup } = this.props;
-        // todo: I need to validate user input:
-        signup({username, password, email});
+
+        this.validateInput();
+        
+        if (error.code === 0) {
+            signup({ username, password, email });
+        }
         // todo: on successful signup I need to route to dashboard
     };
 
@@ -83,6 +127,8 @@ class SignupForm extends Component {
                         onChange={this.handleChange('username')}
                     />
                     <TextField
+                        error={error.code === 3}
+                        helperText={error.code === 3 ? error.label : ''}
                         id="email"
                         label="Email"
                         placeholder="example@gmail.com"
@@ -92,6 +138,8 @@ class SignupForm extends Component {
                         onChange={this.handleChange('email')}
                     />
                     <TextField
+                        error={error.code === 1 || error.code === 2}
+                        helperText={error.label}
                         id="password"
                         label="Password"
                         type="password"
@@ -101,8 +149,8 @@ class SignupForm extends Component {
                         onChange={this.handleChange('password')}
                     />
                     <TextField
-                        error={error.code !== 0}
-                        helperText={error.text}
+                        error={error.code === 1 || error.code === 2}
+                        helperText={error.code === 1 || error.code === 2 ? error.label : ''}
                         type="password"
                         id="confirmPassword"
                         label="Confirm Password"
@@ -112,7 +160,7 @@ class SignupForm extends Component {
                         onChange={this.handleChange('confirmPassword')}
                     />
                     <Button variant="raised" className={classes.button} onClick={this.onCancel}>Cancel</Button>
-                    <Button variant="raised" className={classes.button} onClick={this.onSignup}>Signup!</Button>
+                    <Button variant="raised" className={classes.button} onClick={this.onSignup} disable={error.code === 0 ? 'true' : 'false'}>Signup!</Button>
                 </form>
             </div>
         )
