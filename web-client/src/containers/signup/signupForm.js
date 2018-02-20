@@ -5,12 +5,7 @@ import Button from 'material-ui/Button';
 
 import { checkPassword, checkEmail } from '../../modules/utils/validateInput';
 
-
-
 const styles = theme => ({
-    root: {
-
-    },
     formContainer: {
         display: 'flex',
         flexWrap: 'wrap',
@@ -68,7 +63,7 @@ class SignupForm extends Component {
     };
 
     validateInput = () => {
-        const { username, email, password, confirmPassword } = this.state;
+        const { email, password, confirmPassword } = this.state;
 
         const passwordError = checkPassword(password, confirmPassword);
 
@@ -85,7 +80,6 @@ class SignupForm extends Component {
                 error: emailError
             });
         };
-
     }
 
     onCancel = () => {
@@ -100,14 +94,19 @@ class SignupForm extends Component {
 
     onSignup = () => {
         const { username, password, email, error } = this.state;
-        const { signup } = this.props;
+        const { signup, next } = this.props;
 
         this.validateInput();
         
         if (error.code === 0) {
             signup({ username, password, email });
         }
-        // todo: on successful signup I need to route to dashboard
+
+        if(error.code === 0) {
+            next();
+        } else {
+            // TODO: display signup error to user
+        }
     };
 
     render() {
@@ -115,7 +114,7 @@ class SignupForm extends Component {
         const { error } = this.state;
         
         return (
-            <div className={classes.root}>
+            <div>
                 <form className={classes.formContainer} noValidate autoComplete="off">
                     <TextField
                         id="username"

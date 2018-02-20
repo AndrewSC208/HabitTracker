@@ -1,4 +1,5 @@
 import { CREATE_USER_REQUEST, CREATE_USER } from './types';
+
 /*** ACTIONS ***/
 export const createUser = (payload) => {
     return dispatch => {
@@ -16,12 +17,9 @@ export const createUser = (payload) => {
 
 export const createUserReq = (payload) => {
     const { username, password, email } = payload;
+    // TODO: move urls to config/env files
     const url = `http://localhost:4112/api/users`;
-    const msg = {
-        username,
-        email,
-        password
-    }
+    const msg = { username, email, password };
 
     return dispatch => {
         dispatch({
@@ -38,7 +36,7 @@ export const createUserReq = (payload) => {
         .then(payload => payload.json())
         .then(payload => {
             if (payload.error_code) {
-                // todo: handle error properly
+                // TODO: handle error properly
                 console.error('Error', payload.error_msg)
             }
             
@@ -47,7 +45,7 @@ export const createUserReq = (payload) => {
                 payload
             });
         })
-        // todo: handle error properly
+        // TODO: handle error properly
         .catch(error => console.error('Error:', error))
     }
 }
