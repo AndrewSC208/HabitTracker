@@ -4,9 +4,6 @@ import TextField from 'material-ui/TextField';
 import Button from 'material-ui/Button';
 
 const styles = theme => ({
-    root: {
-
-    },
     formContainer: {
         display: 'flex',
         flexWrap: 'wrap',
@@ -27,21 +24,46 @@ class LoginForm extends Component {
         this.state = {
             username: '',
             password: '',
+            error: {
+                code: 5,
+                text: '',
+                lable: '',
+                action: null
+            }
         }
     }
 
     handleChange = name => event => {
+        
+        let error = {
+            code: 0,
+            text: '',
+            label: '',
+            action: null
+        }
+
         this.setState({
+            error,
             [name]: event.target.value,
         });
     };
 
     onLogin = () => {
-        const { username, password } = this.state;
+        const { username, password, error } = this.state;
+        const { login } = this.props;
     
-        console.log(username, password);
+        // this.validateInput();
 
-        this.props.next();
+        if(error.code === 0) {
+            login({ username, password });
+        }
+
+        // TODO
+        // if(error.code === 0) {
+        //     next();
+        // } else {
+        //     // TODO: display login error to user
+        // }
     };
 
     onCancel = () => {
@@ -57,11 +79,11 @@ class LoginForm extends Component {
         const { classes } = this.props;
 
         return (
-            <div className={classes.root}>
+            <div>
                 <form className={classes.formContainer} noValidate autoComplete="off">
                     <TextField
                         id="username"
-                        label="Username/Email"
+                        label="Email"
                         placeholder="friend@test.com"
                         className={classes.textField}
                         margin="normal"

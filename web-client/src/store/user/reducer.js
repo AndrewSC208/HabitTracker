@@ -1,4 +1,10 @@
-import { CREATE_USER_REQUEST, CREATE_USER } from './types';
+import {
+    CREATE_USER_REQUEST,
+    CREATE_USER,
+    LOGIN_USER_REQUEST,
+    LOGIN_USER
+} from './types';
+
 /*** INITIAL STATE ***/
 const initialState = {
     id: '',
@@ -6,10 +12,11 @@ const initialState = {
     email: '',
     xAuth: '',
     isCreating: false,
-    isReading: false,
     isUpdating: false,
+    isReading: false,
     isDeleteing: false
 }
+
 /*** REDUCER ***/
 const user = (state = initialState, action) => {
     const { type } = action;
@@ -21,6 +28,12 @@ const user = (state = initialState, action) => {
                 isCreating: true
             }
 
+        case LOGIN_USER_REQUEST:
+            return {
+                ...state,
+                isUpdating: true
+            }
+
         case CREATE_USER:
             const { _id, username, email } = action.payload;
             return {
@@ -29,6 +42,12 @@ const user = (state = initialState, action) => {
                 username,
                 email,
                 isCreating: !state.isCreating
+            }
+
+        case LOGIN_USER:
+            return {
+                ...state,
+                isUpdating: !state.isUpdating
             }
 
         default:
