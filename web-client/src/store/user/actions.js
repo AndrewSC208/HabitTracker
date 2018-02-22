@@ -70,12 +70,14 @@ export const loginUser = (payload) => {
 export const loginUserReq = (payload) => {
     const url = `http://localhost:4112/api/users/login`;
     const { email, password} = payload;
-    const msg = {email, password};
+    const msg = { email, password };
 
     return dispatch => {
         dispatch({
             type: LOGIN_USER_REQUEST
         });
+
+        console.log("Payload: ", msg);
 
         return fetch(url, {
             method: 'POST',
@@ -91,10 +93,10 @@ export const loginUserReq = (payload) => {
                 console.error('Error', payload.error_msg)
             }
 
-            console.log('Payload from server: ', payload);
+            // TODO: save jwt to local storage
 
             dispatch({
-                type: LOGIN_USER,
+                type: CREATE_USER,
                 payload
             });
         })

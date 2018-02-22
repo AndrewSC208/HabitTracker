@@ -22,7 +22,7 @@ class LoginForm extends Component {
         super(props);
 
         this.state = {
-            username: '',
+            email: '',
             password: '',
             error: {
                 code: 5,
@@ -49,30 +49,29 @@ class LoginForm extends Component {
     };
 
     onLogin = () => {
-        const { username, password, error } = this.state;
-        const { login } = this.props;
+        const { email, password, error } = this.state;
+        const { login, next } = this.props;
     
         // this.validateInput();
 
         if(error.code === 0) {
-            login({ username, password });
+            login({ email, password });
         }
 
-        // TODO
-        // if(error.code === 0) {
-        //     next();
-        // } else {
-        //     // TODO: display login error to user
-        // }
+        if(error.code === 0) {
+            next();
+        } else {
+            //todo - handle error
+        }
     };
 
     onCancel = () => {
-        this.setState({
-            username: '',
-            password: '',
-        })
+        const { cancel } = this.props;
 
-        this.props.cancel();
+        this.setState({
+            email: '',
+            password: '',
+        }, cancel())
     }
 
     render() {
@@ -84,17 +83,18 @@ class LoginForm extends Component {
                     <TextField
                         id="username"
                         label="Email"
-                        placeholder="friend@test.com"
+                        placeholder="friend@example.com"
                         className={classes.textField}
                         margin="normal"
                         fullWidth
-                        onChange={this.handleChange('username')}
+                        onChange={this.handleChange('email')}
                     />
                     <TextField
                         id="password"
                         label="Password"
                         className={classes.textField}
                         margin="normal"
+                        type="password"
                         fullWidth
                         onChange={this.handleChange('password')}
                     />

@@ -34,6 +34,7 @@ const user = (state = initialState, action) => {
                 isUpdating: true
             }
 
+        case LOGIN_USER:
         case CREATE_USER:
             const { _id, username, email } = action.payload;
             return {
@@ -41,13 +42,8 @@ const user = (state = initialState, action) => {
                 id: _id,
                 username,
                 email,
-                isCreating: !state.isCreating
-            }
-
-        case LOGIN_USER:
-            return {
-                ...state,
-                isUpdating: !state.isUpdating
+                isCreating: false,
+                isUpdating: false
             }
 
         default:
