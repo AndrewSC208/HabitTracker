@@ -34,7 +34,6 @@ class LoginForm extends Component {
     }
 
     handleChange = name => event => {
-        
         let error = {
             code: 0,
             text: '',
@@ -52,6 +51,7 @@ class LoginForm extends Component {
         const { email, password, error } = this.state;
         const { login, next } = this.props;
     
+        // todo - validate input
         // this.validateInput();
 
         if(error.code === 0) {
@@ -59,6 +59,7 @@ class LoginForm extends Component {
         }
 
         if(error.code === 0) {
+            // todo - make sure that this does not route until we get a 200 from server
             next();
         } else {
             //todo - handle error

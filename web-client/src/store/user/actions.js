@@ -77,8 +77,6 @@ export const loginUserReq = (payload) => {
             type: LOGIN_USER_REQUEST
         });
 
-        console.log("Payload: ", msg);
-
         return fetch(url, {
             method: 'POST',
             body: JSON.stringify(msg),
@@ -96,7 +94,7 @@ export const loginUserReq = (payload) => {
             // TODO: save jwt to local storage
 
             dispatch({
-                type: CREATE_USER,
+                type: LOGIN_USER,
                 payload
             });
         })

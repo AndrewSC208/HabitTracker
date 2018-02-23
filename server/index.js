@@ -1,17 +1,18 @@
-import path from 'path';
-import express from 'express';
-import logger from 'morgan';
-import http from 'http';
-import helmet from 'helmet';
+import path         from 'path';
+import express      from 'express';
+import logger       from 'morgan';
+import http         from 'http';
+import helmet       from 'helmet';
 import cookieParser from 'cookie-parser';
 import responseTime from 'response-time';
-import bodyParser from 'body-parser';
-import cors from 'express-cors';
+import bodyParser   from 'body-parser';
+import cors         from 'express-cors';
+import SocketIO     from 'socket.io';
 /*
  *  CONFIG OBJECT
  */
 import mongoose from './config/mongoose';
-import Config from './config/server';
+import Config   from './config/server';
 /*
  *  API
  */
@@ -19,7 +20,12 @@ import Api from './api'
 /*
  * START EXPRESS:
  */
-const app = express();
+let app    = express();
+let server = http.Server(app);
+let io     = new SocketIO(server);
+// Todo: move this
+let users   = [];
+let sockets = {};
 /*
  * CONFIG EXPRESS GLOBALS & MIDDLEWARE:
  */
@@ -44,10 +50,20 @@ app.use('/api', Api);
  */
 //app.use('/', index,);
 /*
- * START SERVER:
+ *  SOCKET METHODS: todo - move this
  */
-http.createServer(app).listen(Config.PORT, () => {
-    console.log(`Server is running on: ${Config.PORT}`)
+io.on('connection', (client) => {
+    console.log('CLIENT CONNECTED');
+
+    client.on('disconnect', () => {
+        console.log('CLIENT DISCONNECTED');
+    })
 });
+/*
+ * SET PORT TO LISTEN ON
+ */
+server.listen(Config.PORT, () => {
+    console.log(`Server is running on: ${Config.PORT}`)
+})
 
 export default app;

@@ -10,7 +10,6 @@ const initialState = {
     id: '',
     username: '',
     email: '',
-    xAuth: '',
     isCreating: false,
     isUpdating: false,
     isReading: false,
