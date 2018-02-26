@@ -93,13 +93,19 @@ export const loginUserReq = (payload) => {
 
             // TODO: save jwt to local storage
 
+            // udpate store with user info
             dispatch({
                 type: LOGIN_USER,
                 payload
             });
+
+            // I need to send user info to socket for socket login
+
+            
+
+
         })
         // TODO: handle error properly
         .catch(error => console.error('Error:', error))
     }
-
 }
