@@ -1,23 +1,16 @@
+import { initWs } from '../../modules/socket';
+
 import { 
     CREATE_USER_REQUEST, 
     CREATE_USER,
     LOGIN_USER_REQUEST,
-    LOGIN_USER } from './types';
+    LOGIN_USER,
+    CONNECT_USER_REQUEST,
+    CONNECT_USER,
+    USER } from './types';
 
 /*** ACTIONS ***/
-export const createUser = (payload) => {
-    return dispatch => {
-        dispatch({
-            type: CREATE_USER_REQUEST,
-            payload
-        })
-
-        dispatch({
-            type: CREATE_USER,
-            payload
-        })
-    }
-}
+// 
 
 export const createUserReq = (payload) => {
     const { username, password, email } = payload;
@@ -27,7 +20,10 @@ export const createUserReq = (payload) => {
 
     return dispatch => {
         dispatch({
-            type: CREATE_USER_REQUEST
+            type: USER,
+            payload: {
+                isCreating: true
+            }
         });
 
         return fetch(url, {
@@ -45,25 +41,12 @@ export const createUserReq = (payload) => {
             }
             
             dispatch({
-                type: CREATE_USER,
+                type: USER,
                 payload
             });
         })
         // TODO: handle error properly
         .catch(error => console.error('Error:', error))
-    }
-}
-
-export const loginUser = (payload) => {
-    return dispatch => {
-        dispatch({
-            type: LOGIN_USER_REQUEST,
-        })
-
-        dispatch({
-            type: LOGIN_USER,
-            payload
-        })
     }
 }
 
@@ -93,19 +76,74 @@ export const loginUserReq = (payload) => {
 
             // TODO: save jwt to local storage
 
-            // udpate store with user info
             dispatch({
                 type: LOGIN_USER,
                 payload
             });
 
-            // I need to send user info to socket for socket login
-
+            // now that the user has an auth token
+            // I need to new up the ws socket with user info
+            // export instance of ws so the whole app can use it.
             
-
-
         })
         // TODO: handle error properly
         .catch(error => console.error('Error:', error))
+    }
+}
+
+//export const createUser = (payload) => {
+//     return dispatch => {
+//         dispatch({
+//             type: CREATE_USER_REQUEST,
+//             payload
+//         })
+
+//         dispatch({
+//             type: CREATE_USER,
+//             payload
+//         })
+//     }
+// }
+
+// export const loginUser = (payload) => {
+//     return dispatch => {
+//         dispatch({
+//             type: LOGIN_USER_REQUEST,
+//         })
+
+//         dispatch({
+//             type: LOGIN_USER,
+//             payload
+//         })
+//     }
+// }
+
+// export const connectUser = (payload) => {
+//     return dispatch => {
+//         dispatch({
+//             type: CONNECT_USER_REQUEST,
+//         })
+
+//         dispatch({
+//             type: CONNECT_USER,
+//             payload
+//         })
+//     }
+// }
+
+export const connectUserRequest = (payload) => {
+    const {id, email} = payload;
+
+    return dispatch => {
+        dispatch({
+            CONNECT_USER_REQUEST
+        });
+
+        return initWs(id, email).then(conn => {
+            console.log('connection and user')
+        })
+        .catch(err => {
+            console.log('SOMETHING HAPPEND: ', err);
+        })
     }
 }

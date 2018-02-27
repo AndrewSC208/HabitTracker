@@ -1,16 +1,20 @@
 import io from 'socket.io-client';
 
-export default class Ws {
+let ws; 
+
+class Ws {
     constructor(_user) {
+        this.connected = false;
         this.socket = this.connect();
         this.socket.on('connection', (socket) => {
             socket.emit('connectUser', _user);
-            socket.on('diconnect', () => {
-                this.disconnect();
+            
+            socket.on('userConnected', (res) => {
+                this.connected(res);
             });
 
-            socket.on('userConnected', (user) => {
-                this.connected(user);
+            socket.on('diconnect', () => {
+                this.disconnect();
             });
         });
     }
@@ -22,10 +26,29 @@ export default class Ws {
     }
 
     connected(user) {
-        console.log('user connected', user);
+        this.connected = true;
+
     }
 
     disconnect() {
         console.log('CLIENT HAD DISCONNECTED');
     }
+}
+
+const initWs = (user) => {
+    return new Promise((resolve, reject) => {
+        ws = new Ws(user);
+
+        // todo: add some retry logic here
+        if(ws.connected) {
+            resolve(ws);
+        }
+        
+        reject('SOCKET DID NOT CONNECT');
+    });
+}
+
+export {
+    ws,
+    initWs
 }
