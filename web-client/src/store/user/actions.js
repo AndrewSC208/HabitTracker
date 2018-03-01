@@ -1,17 +1,22 @@
-import { initWs } from '../../modules/socket';
-
-import { 
-    CREATE_USER_REQUEST, 
-    CREATE_USER,
-    LOGIN_USER_REQUEST,
-    LOGIN_USER,
-    CONNECT_USER_REQUEST,
-    CONNECT_USER,
-    USER } from './types';
+import { connectWs } from '../../modules/socket';
+import { USER, SOCKET } from './types';
 
 /*** ACTIONS ***/
-// 
+export const setUser = (payload) => {
+    return {
+        type: USER,
+        payload
+    }
+}
 
+export const setSocket = (payload) => {
+    return {
+        type: SOCKET,
+        payload
+    }
+}
+
+/*** ASYNC ACTIONS ***/
 export const createUserReq = (payload) => {
     const { username, password, email } = payload;
     // TODO: move urls to config/env files
@@ -19,12 +24,7 @@ export const createUserReq = (payload) => {
     const msg = { username, email, password };
 
     return dispatch => {
-        dispatch({
-            type: USER,
-            payload: {
-                isCreating: true
-            }
-        });
+        dispatch(setUser({ isUpdating: true }));
 
         return fetch(url, {
             method: 'POST',
@@ -39,11 +39,13 @@ export const createUserReq = (payload) => {
                 // TODO: handle error properly
                 console.error('Error', payload.error_msg)
             }
+
+            const user = {
+                ...payload,
+                isUpdating: false
+            }
             
-            dispatch({
-                type: USER,
-                payload
-            });
+            dispatch(setUser(user));
         })
         // TODO: handle error properly
         .catch(error => console.error('Error:', error))
@@ -56,9 +58,7 @@ export const loginUserReq = (payload) => {
     const msg = { email, password };
 
     return dispatch => {
-        dispatch({
-            type: LOGIN_USER_REQUEST
-        });
+        dispatch(setUser({ isUpdating: true }))
 
         return fetch(url, {
             method: 'POST',
@@ -76,74 +76,27 @@ export const loginUserReq = (payload) => {
 
             // TODO: save jwt to local storage
 
-            dispatch({
-                type: LOGIN_USER,
-                payload
-            });
+            const user = { ...payload, isUpdating: false }
 
-            // now that the user has an auth token
-            // I need to new up the ws socket with user info
-            // export instance of ws so the whole app can use it.
-            
+            dispatch(setUser(user))
+            dispatch(connectUser())
         })
         // TODO: handle error properly
         .catch(error => console.error('Error:', error))
     }
 }
 
-//export const createUser = (payload) => {
-//     return dispatch => {
-//         dispatch({
-//             type: CREATE_USER_REQUEST,
-//             payload
-//         })
+export const connectUser = () => {
+    return (dispatch, getState) => {
+        const state = getState();
+        const { user } = state;
 
-//         dispatch({
-//             type: CREATE_USER,
-//             payload
-//         })
-//     }
-// }
-
-// export const loginUser = (payload) => {
-//     return dispatch => {
-//         dispatch({
-//             type: LOGIN_USER_REQUEST,
-//         })
-
-//         dispatch({
-//             type: LOGIN_USER,
-//             payload
-//         })
-//     }
-// }
-
-// export const connectUser = (payload) => {
-//     return dispatch => {
-//         dispatch({
-//             type: CONNECT_USER_REQUEST,
-//         })
-
-//         dispatch({
-//             type: CONNECT_USER,
-//             payload
-//         })
-//     }
-// }
-
-export const connectUserRequest = (payload) => {
-    const {id, email} = payload;
-
-    return dispatch => {
-        dispatch({
-            CONNECT_USER_REQUEST
-        });
-
-        return initWs(id, email).then(conn => {
-            console.log('connection and user')
-        })
-        .catch(err => {
-            console.log('SOMETHING HAPPEND: ', err);
-        })
+        connectWs(user)
+            .then(socket => {
+                const { evt } = socket;
+                dispatch(setSocket(evt));
+            })
+            // TODO: handle error properly
+            .catch(err => console.log(err));
     }
 }

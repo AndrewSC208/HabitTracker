@@ -2,8 +2,6 @@ import React, { Component } from 'react';
 import { withStyles } from 'material-ui/styles';
 import Button from 'material-ui/Button';
 
-import { connectSocket } from '../../modules/socket';
-
 const styles = theme => ({
     root: {
 
@@ -13,10 +11,6 @@ const styles = theme => ({
 class DashboardView extends Component {
     onLogout = () => {
         this.props.toHome();
-    }
-
-    componentDidMount() {
-        connectSocket();
     }
 
     render() {

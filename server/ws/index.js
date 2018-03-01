@@ -2,8 +2,8 @@ import SocketIO from 'socket.io';
 
 class User {
     constructor(_id, _email, _socket_id) {
-        this.id = _id;
-        this.email = _email;
+        this.id        = _id;
+        this.email     = _email;
         this.socket_id = _socket_id;
     }
 }
@@ -25,7 +25,6 @@ export default class Ws {
                 this.setClient(user, socket.id);
             });
 
-            // todo: uncomment after testing
             // socket.on('disconnect', () => {
             //     this.deleteClient(socket.id);
             // });
@@ -33,16 +32,13 @@ export default class Ws {
     }
 
     setClient(user, socket_id) {
-        const { id, email } = user;
-        const user = new User(id, email, socket_id);
+        const { _id, email } = user;
+        const connectedUser = new User(_id, email, socket_id);
 
-        this.clients.set(socket_id, user);
+        this.clients.set(socket_id, connectedUser);
+        this.server.emit('userConnected', connectedUser);
 
-        console.log('CLIENT CONNECTED, AND USER UPDATED: ', user);
-    }
-
-    getCient() {
-
+        console.log('clients: ', this.clients);
     }
 
     deleteClient(socket_id) {
