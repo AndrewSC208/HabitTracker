@@ -6,11 +6,11 @@ import DashboardView from './view';
 
 const mapStateToProps = state => ({
 
-})
+});
 
 const mapDispatchToProps = dispatch => bindActionCreators({
     toHome: () => push('/'),
-}, dispatch)
+}, dispatch);
 
 export default connect(
     mapStateToProps,

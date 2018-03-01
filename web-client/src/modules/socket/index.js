@@ -1,18 +1,27 @@
 import io from 'socket.io-client';
 
-let socket;
+const connectWs = (user) => {
+    return new Promise((resolve, reject) => {
+        // TODO: auth the user when connecting to socket
+        const ws = new Ws();
 
-const connectSocket = () => {
-    // todo - move this to config, and env files
-    socket = io.connect('http://localhost:4112');
-} 
+        ws.evt.on('connect', socket => {
+            console.log('user id: ', user);
+            ws.evt.emit('connectUser', user);
 
-const disconnectSocket = () => {
-    socket.close();
+            resolve(ws);
+        });
+    });
 }
 
-export {
-    connectSocket,
-    disconnectSocket
+class Ws {
+    constructor() {
+        this.evt = io('http://localhost:4112');
+
+        this.evt.on('userConnected', user => {
+            console.log('user connected', user);
+        });
+    }
 }
 
+export { connectWs }

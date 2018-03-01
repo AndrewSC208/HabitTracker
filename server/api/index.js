@@ -8,6 +8,7 @@ const Api = express.Router();
 
 Api.use('/users', Users);
 Api.use('/todos', Todos);
-Api.use('/workouts', Workouts);
+// TODO: workouts still needs some love
+//Api.use('/workouts', Workouts);
 
 export default Api;

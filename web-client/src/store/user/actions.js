@@ -1,24 +1,22 @@
-import { 
-    CREATE_USER_REQUEST, 
-    CREATE_USER,
-    LOGIN_USER_REQUEST,
-    LOGIN_USER } from './types';
+import { connectWs } from '../../modules/socket';
+import { USER, SOCKET } from './types';
 
 /*** ACTIONS ***/
-export const createUser = (payload) => {
-    return dispatch => {
-        dispatch({
-            type: CREATE_USER_REQUEST,
-            payload
-        })
-
-        dispatch({
-            type: CREATE_USER,
-            payload
-        })
+export const setUser = (payload) => {
+    return {
+        type: USER,
+        payload
     }
 }
 
+export const setSocket = (payload) => {
+    return {
+        type: SOCKET,
+        payload
+    }
+}
+
+/*** ASYNC ACTIONS ***/
 export const createUserReq = (payload) => {
     const { username, password, email } = payload;
     // TODO: move urls to config/env files
@@ -26,9 +24,7 @@ export const createUserReq = (payload) => {
     const msg = { username, email, password };
 
     return dispatch => {
-        dispatch({
-            type: CREATE_USER_REQUEST
-        });
+        dispatch(setUser({ isUpdating: true }));
 
         return fetch(url, {
             method: 'POST',
@@ -43,27 +39,16 @@ export const createUserReq = (payload) => {
                 // TODO: handle error properly
                 console.error('Error', payload.error_msg)
             }
+
+            const user = {
+                ...payload,
+                isUpdating: false
+            }
             
-            dispatch({
-                type: CREATE_USER,
-                payload
-            });
+            dispatch(setUser(user));
         })
         // TODO: handle error properly
         .catch(error => console.error('Error:', error))
-    }
-}
-
-export const loginUser = (payload) => {
-    return dispatch => {
-        dispatch({
-            type: LOGIN_USER_REQUEST,
-        })
-
-        dispatch({
-            type: LOGIN_USER,
-            payload
-        })
     }
 }
 
@@ -73,9 +58,7 @@ export const loginUserReq = (payload) => {
     const msg = { email, password };
 
     return dispatch => {
-        dispatch({
-            type: LOGIN_USER_REQUEST
-        });
+        dispatch(setUser({ isUpdating: true }))
 
         return fetch(url, {
             method: 'POST',
@@ -93,13 +76,27 @@ export const loginUserReq = (payload) => {
 
             // TODO: save jwt to local storage
 
-            dispatch({
-                type: LOGIN_USER,
-                payload
-            });
+            const user = { ...payload, isUpdating: false }
+
+            dispatch(setUser(user))
+            dispatch(connectUser())
         })
         // TODO: handle error properly
         .catch(error => console.error('Error:', error))
     }
+}
 
+export const connectUser = () => {
+    return (dispatch, getState) => {
+        const state = getState();
+        const { user } = state;
+
+        connectWs(user)
+            .then(socket => {
+                const { evt } = socket;
+                dispatch(setSocket(evt));
+            })
+            // TODO: handle error properly
+            .catch(err => console.log(err));
+    }
 }

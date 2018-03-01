@@ -1,49 +1,25 @@
-import {
-    CREATE_USER_REQUEST,
-    CREATE_USER,
-    LOGIN_USER_REQUEST,
-    LOGIN_USER
-} from './types';
+import { USER, SOCKET } from './types';
 
 /*** INITIAL STATE ***/
 const initialState = {
-    id: '',
+    _id: '',
     username: '',
     email: '',
-    isCreating: false,
+    socket: false,
     isUpdating: false,
-    isReading: false,
-    isDeleteing: false
+    isConnecting: false
 }
 
 /*** REDUCER ***/
 const user = (state = initialState, action) => {
-    const { type } = action;
+    const { type, payload } = action;
 
     switch (type) {
-        case CREATE_USER_REQUEST:
-            return {
-                ...state,
-                isCreating: true
-            }
+        case USER:
+            return { ...state, ...payload }
 
-        case LOGIN_USER_REQUEST:
-            return {
-                ...state,
-                isUpdating: true
-            }
-
-        case LOGIN_USER:
-        case CREATE_USER:
-            const { _id, username, email } = action.payload;
-            return {
-                ...state,
-                id: _id,
-                username,
-                email,
-                isCreating: false,
-                isUpdating: false
-            }
+        case SOCKET:
+            return { ...state, socket: {...payload} }
 
         default:
             return state
