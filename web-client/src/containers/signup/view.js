@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { withStyles } from 'material-ui/styles';
 import Grid from 'material-ui/Grid';
 
-import SignupForm from './signupForm';
+import SignupForm from '../../components/signupForm';
 
 const styles = theme => ({
     root: {

@@ -3,7 +3,7 @@ import { withStyles } from 'material-ui/styles';
 import TextField from 'material-ui/TextField';
 import Button from 'material-ui/Button';
 
-import { checkPassword, checkEmail } from '../../modules/utils/validateInput';
+import { checkPassword, checkEmail } from '../modules/utils/validateInput';
 
 const styles = theme => ({
     formContainer: {
