@@ -17,6 +17,14 @@ export const setSocket = (payload) => {
 }
 
 /*** ASYNC ACTIONS ***/
+/**
+ * dispatch this function to create a user
+ * {
+ *  username: '',
+ *  password: '',
+ *  email: ''
+ * }
+ */
 export const createUserReq = (payload) => {
     const { username, password, email } = payload;
     // TODO: move urls to config/env files
@@ -51,7 +59,13 @@ export const createUserReq = (payload) => {
         .catch(error => console.error('Error:', error))
     }
 }
-
+/**
+ * dispatch this function to login
+ * {
+ *  password: '',
+ *  email: ''
+ * }
+ */
 export const loginUserReq = (payload) => {
     const url = `http://localhost:4112/api/users/login`;
     const { email, password} = payload;
@@ -85,7 +99,10 @@ export const loginUserReq = (payload) => {
         .catch(error => console.error('Error:', error))
     }
 }
-
+/**
+ * dispatch this function to connect a user to socket
+ * NOTE: can only be done after the usre has logged in
+ */
 export const connectUser = () => {
     return (dispatch, getState) => {
         const state = getState();

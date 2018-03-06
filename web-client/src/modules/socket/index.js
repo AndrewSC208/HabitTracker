@@ -6,7 +6,6 @@ const connectWs = (user) => {
         const ws = new Ws();
 
         ws.evt.on('connect', socket => {
-            console.log('user id: ', user);
             ws.evt.emit('connectUser', user);
 
             resolve(ws);
@@ -21,6 +20,12 @@ class Ws {
         this.evt.on('userConnected', user => {
             console.log('user connected', user);
         });
+    }
+}
+
+class WorkoutNsp {
+    constructor() {
+        
     }
 }
 
