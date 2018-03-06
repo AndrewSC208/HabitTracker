@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { withStyles } from 'material-ui/styles';
 import Button from 'material-ui/Button';
-import BottomNav from '../components/bottomNav'
+import BottomNav from '../../components/bottomNav'
 
 const styles = theme => ({
     root: {
