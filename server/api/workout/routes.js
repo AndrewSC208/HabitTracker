@@ -2,14 +2,18 @@ import express from 'express';
 import { ObjectId } from 'mongodb';
 
 import Workout from './model';
+import authenticate from '../../middleware/authenticate';
 
 const Workouts = express.Router();
 
-Workouts.post('', (req, res) => {
+/**
+ * POST /workouts
+ * Action: Create a workout for the user with fk of userId
+ * @param { workoutType: '', userId: 'string'}
+ */
+Workouts.post('', authenticate, (req, res) => {
     const { start_time, end_time, workoutType, userId} = req.body;
     const workout = new Workout({
-        start_time,
-        end_time, 
         workoutType,
         userId
     });
@@ -29,10 +33,10 @@ Workouts.post('', (req, res) => {
 });
 /*
  *  Get all workouts for a user:
- *  GET /worksouts/:id
+ *  GET /worksouts
  *  
  */
-// Worksouts.get('/:id', (req, res) => {
+// Worksouts.get('/', (req, res) => {
 
 // });
 

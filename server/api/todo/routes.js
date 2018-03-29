@@ -9,16 +9,63 @@ const Todos = express.Router();
  *  POST /todos
  */
 Todos.post('', authenticate, (req, res) => {
+    // new up the model
     const todo = new Todo({
         text: req.body.text,
         _creator: req.user._id
     });
 
+    // call promise to save, when save is complete then send a res to the client
     todo.save().then((data) => {
         res.send(data);
     }, (e) => {
         res.status(400).send(e);
     });
+
+    /**
+     * Promise
+     * 
+     * Dao.Todos.create(data)
+     * Is a promise, that retuns the object that should be sent back to the client,
+     * or and error that contains the http status, and the error message
+     */
+    // Dao.Todos.create(data)
+    //     .then(sucess => res.send(sucess))
+    //     .catch(error => res.status(error.status).send(error.message));
+
+    // OR
+
+    /**
+     * async/await
+     * 
+     * Dao.Todos.create(data)
+     * 
+     * Can somehow use async/await and try/catch?
+     * Is it worth it?
+     * Will the system be faster?
+     * What about the developer experiance?
+     * I would learn a bit more about conncurrency with JS.
+     * I think that I might have some performance implecations.
+     */
+    // const success = await Dao.Todos.create(data);
+
+    // try {
+    //     res.send(success);
+    // } catch(error) {
+    //     res.status(error.status).send(error.message)
+    // }
+
+    // OR
+
+    /**
+     * USE MONGOOSE
+     * Using mongoose gives me a lot of features right out of the box. 
+     * I will be able to create statics for each model and these can be used app wide. 
+     * Also meaning that I would not even need to have seperate restful api's.
+     * I could just rely on GraphQL to do all my request handling. 
+     * Might not be a bad choice since I need to move fast.
+     * I would like to have the api's, and backend done in one sprint. 
+     */
 });
 /*
  *  GET all /todos
