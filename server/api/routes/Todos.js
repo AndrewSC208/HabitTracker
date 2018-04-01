@@ -1,24 +1,28 @@
-import express from 'express';
-import { ObjectId } from 'mongodb';
-
-import Todo from './model';
+import express      from 'express';
 import authenticate from '../../middleware/authenticate';
+
+import { ObjectId } from 'mongodb';
+import { Todo } from '../../dao/models/Todo';
+
+import { Dao } from '../../index';
 
 const Todos = express.Router();
 /*
  *  POST /todos
  */
 Todos.post('', authenticate, (req, res) => {
-    const todo = new Todo({
+    const newTodo = {
         text: req.body.text,
         _creator: req.user._id
-    });
+    };
 
-    todo.save().then((data) => {
-        res.send(data);
-    }, (e) => {
-        res.status(400).send(e);
-    });
+    Dao.Todo.create(newTodo)
+        .then(result => {
+            res.send(result);
+        })
+        .catch(error => {
+            res.send(error.code).send(error.message);
+        });
 });
 /*
  *  GET all /todos

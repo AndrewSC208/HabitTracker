@@ -1,4 +1,4 @@
-import User from '../api/user/model';
+import User from '../dao/models/User';
 
 const authenticate = (req, res, next) => {
     const token = req.header('x-auth');

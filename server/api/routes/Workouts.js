@@ -1,7 +1,7 @@
 import express from 'express';
 import { ObjectId } from 'mongodb';
 
-import Workout from './model';
+import Workout from '../../dao/models/Workout';
 
 const Workouts = express.Router();
 

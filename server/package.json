@@ -32,7 +32,8 @@
     "path": "^0.12.7",
     "response-time": "^2.3.2",
     "socket.io": "^2.0.4",
-    "validator": "^9.2.0"
+    "validator": "^9.2.0",
+    "ws": "^5.1.0"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",

@@ -1,23 +1,38 @@
-import http from 'http';
+// Env
+import Config    from './config/server';
 
-import Config   from './config/server';
-import Api      from './api';
-import App      from './app';
-import Ws       from './ws';
-// TODO: change this to match the rest
-//import Dao from './dao';
-import mongoose from './config/mongoose';
+// libraries
+import Express from 'express';
+import Http    from 'http';
+import Ws      from 'ws';
 
-const app    = new App(Config, Api);
-const server = http.Server(app.express);
-const ws     = new Ws(server);
+// services
+import * as dao from './dao';
+import * as api from './api';
+import * as app from './app';
+import * as www from './www';
+import * as wss from './wss';
 
-server.listen(Config.PORT, () => {
-    console.log(`Server is running on: ${Config.PORT}`)
+// classes
+import * as Routes from './api/routes';
+import * as Models from './dao/models';
+
+// setup
+const Dao    = dao.setup(Config, Models);
+const Api    = api.setup(Express, Routes);
+const App    = app.setup(Config, Api);
+const Server = www.setup(Http, App.express);
+const Wss    = wss.setup(Ws, Server);
+
+// startup
+Server.listen(Config.PORT, () => {
+    console.log(`SERVER RUNNING ON: ${Config.PORT}`)
 });
 
-export {
-    app,
-    server,
-    ws
+export { 
+    Dao,
+    Api,
+    App, 
+    Server,
+    Wss,
 };

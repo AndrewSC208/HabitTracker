@@ -1,14 +1,14 @@
-import express from 'express';
+ /**
+  * Setup
+  * factory function to create the api object
+  */
+export const setup = (express, routes) => {
+    const Api = express.Router();
 
-import Users from './user';
-import Todos from './todo';
-import Workouts from './workout';
+    Api.use('/users', routes.Users);
+    Api.use('/todos', routes.Todos);
+    Api.use('/workouts', routes.Workouts);
 
-const Api = express.Router();
+    return Api;
+};
 
-Api.use('/users', Users);
-Api.use('/todos', Todos);
-// TODO: workouts still needs some love
-//Api.use('/workouts', Workouts);
-
-export default Api;

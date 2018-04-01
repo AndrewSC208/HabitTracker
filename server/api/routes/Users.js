@@ -1,11 +1,10 @@
-import express from 'express';
 import _ from 'lodash';
-
-import User from './model';
-/*
- *  CUSTOM MIDDLEWARE
- */
+import express from 'express';
 import authenticate from '../../middleware/authenticate';
+
+//import { User } from '../../dao/models';
+
+import { Dao } from '../../';
 
 const Users = express.Router();
 /*
@@ -14,7 +13,7 @@ const Users = express.Router();
  */
 Users.post('', (req, res) => {
     const body = _.pick(req.body, ['username', 'email', 'password'])
-    const user = new User(body);
+    const user = new Dao.User(body);
 
     user.save().then(() => {
         return user.generateAuthTokens();
@@ -26,6 +25,18 @@ Users.post('', (req, res) => {
             error_code: 404
         });
     });
+
+    /**
+    Dao.user.create(body)
+        .then()
+        .then()
+        .catch()
+
+    Dao.user.create()
+        .then()
+        .catch()
+
+    */
 });
 /*
  *  I NEED TO FIGURE OUT WHEN I AM GOING TO USE THIS ROUTE
