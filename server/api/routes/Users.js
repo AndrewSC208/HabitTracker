@@ -54,7 +54,7 @@ Users.post('/me', authenticate, (req, res) => {
 Users.post('/login', (req, res) => {
     const { email, password } = req.body;
     
-    User.findByCredentials(email, password)
+    Dao.User.findByCredentials(email, password)
         .then((user) => {
             return user.generateAuthTokens()
                 .then((token) => {

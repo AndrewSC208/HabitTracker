@@ -1,4 +1,4 @@
-import { connectWs } from '../../modules/socket';
+import * as ws from '../../modules/socket';
 import { USER, SOCKET } from './types';
 
 /*** ACTIONS ***/
@@ -108,12 +108,11 @@ export const connectUser = () => {
         const state = getState();
         const { user } = state;
 
-        connectWs(user)
+        ws.connect(user)
             .then(socket => {
-                const { evt } = socket;
-                dispatch(setSocket(evt));
+                console.log('what is the socket obj:', socket);
+                dispatch(setSocket(socket));
             })
-            // TODO: handle error properly
             .catch(err => console.log(err));
     }
 }

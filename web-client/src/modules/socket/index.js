@@ -1,32 +1,15 @@
-import io from 'socket.io-client';
+import WebSocket from 'ws';
 
-const connectWs = (user) => {
+const connect = (user) => {
     return new Promise((resolve, reject) => {
-        // TODO: auth the user when connecting to socket
-        const ws = new Ws();
+        const ws = new WebSocket('http://localhost:4112');
 
-        ws.evt.on('connect', socket => {
-            ws.evt.emit('connectUser', user);
-
-            resolve(ws);
+        ws.on('open', (evt) => {
+            console.log('what is the evt: ', evt);
         });
+
+        resolve(ws);
     });
 }
 
-class Ws {
-    constructor() {
-        this.evt = io('http://localhost:4112');
-
-        this.evt.on('userConnected', user => {
-            console.log('user connected', user);
-        });
-    }
-}
-
-class WorkoutNsp {
-    constructor() {
-        
-    }
-}
-
-export { connectWs }
+export { connect }

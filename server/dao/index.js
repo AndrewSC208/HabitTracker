@@ -1,24 +1,6 @@
 import mongoose from 'mongoose';
 
-export const create = (obj, Model) => {
-    const model = new Model(obj);
-
-    return new Promise((resolve, reject) => {
-        model.save()
-            .then(data => {
-                resolve(data);
-            })
-            .catch(error => {
-                reject({
-                    code: 400,
-                    message: 'Failed to save'
-                });
-            })
-    });
-}
-
 export const setup = (config, models) => {
-    // mongoose setup:
     const MONGO_URI = config.DB.MONGOOSE_CONNECTION_STRING;
     if(!MONGO_URI) {
         throw new Error('A url must be provided for mongo');
@@ -38,11 +20,7 @@ export const setup = (config, models) => {
         console.log('STATIC METHODS: ', model);
 
         if(model === 'Todo') {
-            console.log('before: ', models[model].schema.statics)
-            
-            models[model].schema.statics.create = create;
-
-            console.log('after: ', models[model].schema.statics)
+            //console.log('JUST TO SEE STUFF IN MONGOOSE: ', models[model].schema)
         }
     }
 

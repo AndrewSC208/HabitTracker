@@ -2,8 +2,6 @@ import express      from 'express';
 import authenticate from '../../middleware/authenticate';
 
 import { ObjectId } from 'mongodb';
-import { Todo } from '../../dao/models/Todo';
-
 import { Dao } from '../../index';
 
 const Todos = express.Router();
@@ -28,21 +26,20 @@ Todos.post('', authenticate, (req, res) => {
  *  GET all /todos
  */
 Todos.get('', authenticate, (req, res) => {
-    Todo.find({
-        _creator: req.user._id
-    }).then((data) => {
-        res.send({
-            data
-        });
-    }, (e) => {
-        res.status(400).send(e);
-    })
+    const query = { _creator: req.user._id }
+
+    Dao.Todo.find(query)
+        .then(result => {
+            res.send(result);
+        })
+        .catch(error => {
+            res.status(error.code).send(error.message);
+        })
 });
 /*
  *  GET /todos/:id
  */
 Todos.get('/:id', authenticate, (req, res) => {
-    // id from route:
     const { id } = req.params;
 
     if (!ObjectId.isValid(id)) {
@@ -62,7 +59,6 @@ Todos.get('/:id', authenticate, (req, res) => {
                 error_msg: 'Todo not found'
             });
         }
-
         res.send({ todo });
     }).catch((e) => {
         res.status(400).send({
