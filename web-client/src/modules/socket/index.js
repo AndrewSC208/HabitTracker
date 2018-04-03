@@ -37,4 +37,14 @@ const connect = (user) => {
     });
 };
 
-export { connect, socket }
+/**
+ * I DON'T WANT TO EXPOSE THE SOCKET GLOBALLY,
+ * ONLY EXPOSE THE REQUIRED METHODS TO CONNECT, DISCONNECT, AND SEND MESSAGES
+ */
+const disconnect = () => {}
+
+const send = (message) => {
+    socket.send(JSON.stringify(message));
+}
+
+export { connect, disconnect, send }
