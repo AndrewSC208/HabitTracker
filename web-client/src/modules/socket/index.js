@@ -1,32 +1,40 @@
-import io from 'socket.io-client';
+let socket = {};
 
-const connectWs = (user) => {
+const open = (evt, resolve) => {
+    socket = evt.target;
+    resolve('connected');
+
+    socket.send('This is a message from the client');
+}
+
+const error = (evt, resolve) => {
+    resolve('error');
+
+    console.log('SOME ERROR HAPPEND WITH THE SOCKETS: ', evt);
+}
+
+const message = (evt, resolve) => {
+    console.log('MESSAGE RECEIVED FROM THE SERVER: ', evt.data);
+    /**
+     * I NEED TO FIGURE OUT HOW I AM GOING TO MAP A STREAM OF MESSAGES NOW
+     * OBSERVABLES AT THIS POINT MIGHT BE THE ONLY ANSWER
+     */
+}
+
+const close = (evt, resolve) => {
+    resolve('close');
+
+    console.log('WEBSOCKET WAS CLOSED: ', evt);
+}
+
+const connect = (user) => {
     return new Promise((resolve, reject) => {
-        // TODO: auth the user when connecting to socket
-        const ws = new Ws();
-
-        ws.evt.on('connect', socket => {
-            ws.evt.emit('connectUser', user);
-
-            resolve(ws);
-        });
+        const ws = new WebSocket('ws://localhost:4112');
+        ws.onopen    = (evt) => open(evt, resolve);
+        ws.onerror   = (evt) => error(evt, resolve);
+        ws.onmessage = (evt) => message(evt, resolve);
+        ws.onclose   = (evt) => close(evt, resolve);
     });
-}
+};
 
-class Ws {
-    constructor() {
-        this.evt = io('http://localhost:4112');
-
-        this.evt.on('userConnected', user => {
-            console.log('user connected', user);
-        });
-    }
-}
-
-class WorkoutNsp {
-    constructor() {
-        
-    }
-}
-
-export { connectWs }
+export { connect, socket }

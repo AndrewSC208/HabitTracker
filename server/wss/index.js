@@ -4,13 +4,13 @@ export const setup = (WebSocket, server) => {
     const wss = new WebSocket.Server({server});
 
     wss.on('connection', (ws, req) => {
-        Actions.connection(ws, req);
+        Actions.Connection(ws, req);
 
-        wss.on('message', (msg) => {
-            Actions.message(msg);
+        ws.on('message', (msg) => {
+            Actions.Message(msg);
         });
 
-        wss.send('something');
+        ws.send('something dsfsdfsdfsdfsdfsdf');
     });
 
     return wss;

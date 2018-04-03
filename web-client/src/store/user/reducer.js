@@ -5,7 +5,7 @@ const initialState = {
     _id: '',
     username: '',
     email: '',
-    socket: false,
+    socket: 'disconnected',
     isUpdating: false,
     isConnecting: false
 }
@@ -19,7 +19,7 @@ const user = (state = initialState, action) => {
             return { ...state, ...payload }
 
         case SOCKET:
-            return { ...state, socket: {...payload} }
+            return { ...state, socket: payload }
 
         default:
             return state

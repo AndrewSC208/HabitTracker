@@ -1,4 +1,4 @@
-import { connectWs } from '../../modules/socket';
+import * as Ws from '../../modules/socket';
 import { USER, SOCKET } from './types';
 
 /*** ACTIONS ***/
@@ -93,27 +93,23 @@ export const loginUserReq = (payload) => {
             const user = { ...payload, isUpdating: false }
 
             dispatch(setUser(user))
-            dispatch(connectUser())
+            
+            // route to loadin page
+
+            // connect to socket
+            Ws.connect(user)
+                .then(socket => {
+                    dispatch(setSocket(socket));
+                })
+                .catch(error => console.log(error));
+
+            // load user
+
+            // route to dashboard
+
         })
         // TODO: handle error properly
         .catch(error => console.error('Error:', error))
     }
 }
-/**
- * dispatch this function to connect a user to socket
- * NOTE: can only be done after the usre has logged in
- */
-export const connectUser = () => {
-    return (dispatch, getState) => {
-        const state = getState();
-        const { user } = state;
 
-        connectWs(user)
-            .then(socket => {
-                const { evt } = socket;
-                dispatch(setSocket(evt));
-            })
-            // TODO: handle error properly
-            .catch(err => console.log(err));
-    }
-}

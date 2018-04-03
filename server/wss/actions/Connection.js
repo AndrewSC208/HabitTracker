@@ -1,8 +1,8 @@
 const Connection = (ws, req) => {
-    const location = url.parse(req.url, true);
+    //const location = url.parse(req.url, true);
 
-    console.log('LOCATION FROM CONNECTED SOCKET: ', location);
-    console.log('SOCKET: ', ws);
+    //console.log('REQ FROM CONNECTED SOCKET: ', req);
+    //console.log('SOCKET: ', ws);
 
     // You might use location.query.access_token to authenticate or share sessions
     // or req.headers.cookie (see http://stackoverflow.com/a/16395220/151312)
