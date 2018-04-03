@@ -2,8 +2,6 @@ import _ from 'lodash';
 import express from 'express';
 import authenticate from '../../middleware/authenticate';
 
-//import { User } from '../../dao/models';
-
 import { Dao } from '../../';
 
 const Users = express.Router();
@@ -54,7 +52,7 @@ Users.post('/me', authenticate, (req, res) => {
 Users.post('/login', (req, res) => {
     const { email, password } = req.body;
     
-    User.findByCredentials(email, password)
+    Dao.User.findByCredentials(email, password)
         .then((user) => {
             return user.generateAuthTokens()
                 .then((token) => {

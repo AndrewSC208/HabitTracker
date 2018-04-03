@@ -2,8 +2,6 @@ import express      from 'express';
 import authenticate from '../../middleware/authenticate';
 
 import { ObjectId } from 'mongodb';
-import { Todo } from '../../dao/models/Todo';
-
 import { Dao } from '../../index';
 
 const Todos = express.Router();
@@ -17,18 +15,14 @@ Todos.post('', authenticate, (req, res) => {
     };
 
     Dao.Todo.create(newTodo)
-        .then(result => {
-            res.send(result);
-        })
-        .catch(error => {
-            res.send(error.code).send(error.message);
-        });
+        .then(result => res.send(result))
+        .catch(error => res.send(404).send(error));
 });
 /*
  *  GET all /todos
  */
 Todos.get('', authenticate, (req, res) => {
-    Todo.find({
+    Dao.Todo.find({
         _creator: req.user._id
     }).then((data) => {
         res.send({
@@ -52,7 +46,7 @@ Todos.get('/:id', authenticate, (req, res) => {
         });
     };
 
-    Todo.findOne({
+    Dao.Todo.findOne({
         _id: id,
         _creator: req.user._id
     }).then((todo) => {
@@ -84,7 +78,7 @@ Todos.delete('/:id', authenticate, (req, res) => {
         });
     };
 
-    Todo.findOneAndRemove({
+    Dao.Todo.findOneAndRemove({
         _id: id,
         _creator: req.user._id
     }).then((todo) => {
@@ -127,7 +121,7 @@ Todos.patch('/:id', authenticate, (req, res) => {
         body.completedAt = null;
     }
 
-    Todo.findOneAndUpdate({
+    Dao.Todo.findOneAndUpdate({
         _id: id,
         _creator: req.user._id
     }, { $set: body }, { new: true }).then((todo) => {
