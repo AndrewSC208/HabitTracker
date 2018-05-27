@@ -1,3 +1,0 @@
-/*
-    Steps for auto deployment
-*/

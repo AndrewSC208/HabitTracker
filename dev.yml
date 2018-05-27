@@ -1,27 +1,96 @@
 version: '3'
 
 services:
-  mongo:
-    build:
-      context: ./data
-      dockerfile: dockerfile.mongo.dev
-    ports:
-      - 27017:27017
-
-  server:
-    build:
-      context: ./server
-      dockerfile: dockerfile.node.dev
-    environment:
-      - NODE_ENV=development
-    env_file:
-      - ./Docker/server/server.env
+  # cochroachDB
+  db:
+    image: cockroachdb/cockroach:v2.0.1
+    command: start --insecure --store=attrs=ssd,path=/var/lib/cockroach/
+    restart: always
     volumes:
-      - ./server:/usr/src/app
+      - data:/var/lib/cockroach
+    expose:
+      - "8080"
+      - "26257"
     ports:
-      - 4112:4112
-    depends_on:
-      - mongo
+      - "26257:26257"
+      - "8080:8080"
+
+  # nakama
+  server:
+    image: heroiclabs/nakama:2.0.0
+    entrypoint:
+      - "/bin/sh"
+      - "-ecx"
+      - >
+          /nakama/nakama migrate up --database.address root@cockroachdb:26257 &&
+          /nakama/nakama --name nakama1 --database.address root@cockroachdb:26257
+    restart: always
     links:
-      - mongo
+      - "db:db"
+    depends_on:
+      - db
+    volumes:
+      - ./:/nakama/data
+    expose:
+      - "7350"
+      - "7351"
+    ports:
+      - "7350:7350"
+      - "7351:7351"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:7350/"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # nginx
+  gateway:
+    build: ./gateway
+    container_name: gateway
+    links:
+    - registry
+    ports:
+    - "80:80"
+    labels:
+      SERVICE_IGNORE: 'yes'
+
+  # consul
+  # NOTE: on a mac `$ export HOST_IP=172.17.0.1
+  registry:
+    command: -server -bootstrap -advertise ${HOST_IP}
+    image: progrium/consul
+    container_name: registry
+    labels:
+      SERVICE_IGNORE: 'yes'
+    ports:
+    - "8500:8500"
+
+  # registrator
+  dialer:
+    command: "-internal consul://consul:8500"
+    image: gliderlabs/registrator:latest
+    container_name: dialer
+    links:
+    - registry
+    volumes:
+    - "/var/run/docker.sock:/tmp/docker.sock"
+
+  # nginx static server
+  http:
+    image: nginxdemos/hello:latest
+    labels:
+      SERVICE_80_NAME: http
+      SERVICE_80_CHECK_HTTP: /
+      SERVICE_80_CHECK_INTERVAL: 5s
+      SERVICE_443_IGNORE: 'yes'
+      SERVICE_TAGS: production
+    ports:
+    - "80"
+
+  # logger:
+  # promethuse
+  # metrixs:
+
+volumes:
+  data:
 
